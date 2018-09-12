@@ -17,13 +17,13 @@ namespace Stratis.SmartContracts.Executor.Reflection
         public uint160 NewContractAddress { get; set; }
 
         /// <inheritdoc/>
+        public uint160 To { get; set; }
+
+        /// <inheritdoc/>
         public Exception Exception { get; set; }
 
         /// <inheritdoc/>
-        public bool Revert
-        {
-            get { return this.Exception != null; }
-        }
+        public bool Revert { get; set; }
 
         /// <inheritdoc/>
         public ulong FutureRefund { get; set; }
@@ -41,13 +41,13 @@ namespace Stratis.SmartContracts.Executor.Reflection
         public ulong Fee { get; set; }
 
         /// <inheritdoc/>
-        public List<TxOut> Refunds { get; set; }
+        public TxOut Refund { get; set; }
 
+        /// <inheritdoc />
         public IList<Log> Logs { get; set; }
 
         public SmartContractExecutionResult()
         {
-            this.Refunds = new List<TxOut>();
             this.Logs = new List<Log>();
         }
 
