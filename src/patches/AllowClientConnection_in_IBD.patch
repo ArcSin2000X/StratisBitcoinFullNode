@@ -1,0 +1,15 @@
+diff --git a/src/Stratis.Bitcoin/Base/InitialBlockDownloadState.cs b/src/Stratis.Bitcoin/Base/InitialBlockDownloadState.cs
+index 2a932aa9..58d405f8 100644
+--- a/src/Stratis.Bitcoin/Base/InitialBlockDownloadState.cs
++++ b/src/Stratis.Bitcoin/Base/InitialBlockDownloadState.cs
+@@ -58,8 +58,8 @@ namespace Stratis.Bitcoin.Base
+             if (this.chainState.ConsensusTip.ChainWork < (this.network.Consensus.MinimumChainWork ?? uint256.Zero))
+                 return true;
+ 
+-            if (this.chainState.ConsensusTip.Header.BlockTime.ToUnixTimeSeconds() < (this.dateTimeProvider.GetTime() - this.consensusSettings.MaxTipAge))
+-                return true;
++            //if (this.chainState.ConsensusTip.Header.BlockTime.ToUnixTimeSeconds() < (this.dateTimeProvider.GetTime() - this.consensusSettings.MaxTipAge))
++            //    return true;
+ 
+             return false;
+         }

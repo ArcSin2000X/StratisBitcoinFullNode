@@ -1,0 +1,13 @@
+diff --git a/src/NBitcoin/ConsensusOptions.cs b/src/NBitcoin/ConsensusOptions.cs
+index fc7daf15..10ef1b45 100644
+--- a/src/NBitcoin/ConsensusOptions.cs
++++ b/src/NBitcoin/ConsensusOptions.cs
+@@ -107,7 +107,7 @@
+     public class PosConsensusOptions : ConsensusOptions
+     {
+         /// <summary>Coinstake minimal confirmations softfork activation height for mainnet.</summary>
+-        public const int CoinstakeMinConfirmationActivationHeightMainnet = 1005000;
++        public const int CoinstakeMinConfirmationActivationHeightMainnet = 0;
+ 
+         /// <summary>Coinstake minimal confirmations softfork activation height for testnet.</summary>
+         public const int CoinstakeMinConfirmationActivationHeightTestnet = 436000;
