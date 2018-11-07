@@ -58,8 +58,8 @@ namespace Stratis.Bitcoin.Base
             if (this.chainState.ConsensusTip.ChainWork < (this.network.Consensus.MinimumChainWork ?? uint256.Zero))
                 return true;
 
-            if (this.chainState.ConsensusTip.Header.BlockTime.ToUnixTimeSeconds() < (this.dateTimeProvider.GetTime() - this.consensusSettings.MaxTipAge))
-                return true;
+            //if (this.chainState.ConsensusTip.Header.BlockTime.ToUnixTimeSeconds() < (this.dateTimeProvider.GetTime() - this.consensusSettings.MaxTipAge))
+            //    return true;
 
             return false;
         }
