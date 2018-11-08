@@ -753,7 +753,7 @@ namespace Stratis.Bitcoin.Features.Wallet.Controllers
                     TransactionId = transactionResult.GetHash()
                 };
 
-                return this.Json(model);
+                return this.Json(transactionResult.ToHex());
             }
             catch (Exception e)
             {

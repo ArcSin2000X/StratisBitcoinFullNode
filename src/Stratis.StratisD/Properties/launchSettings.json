@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Stratis.StratisD": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "-datadir=C:\\Dev\\InternalTestnet_Data\\Runtime\\NodeJE"
     },
     "Stratis.StratisD Test": {
       "commandName": "Project",
