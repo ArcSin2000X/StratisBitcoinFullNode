@@ -767,14 +767,14 @@ namespace Stratis.Bitcoin.Features.Wallet.Controllers
 
                 Transaction transactionResult = this.walletTransactionHandler.BuildTransaction(context);
 
-                var model = new WalletBuildTransactionModel
-                {
-                    Hex = transactionResult.ToHex(),
-                    Fee = context.TransactionFee,
-                    TransactionId = transactionResult.GetHash()
-                };
+                //var model = new WalletBuildTransactionModel
+                //{
+                //    Hex = transactionResult.ToHex(),
+                //    Fee = context.TransactionFee,
+                //    TransactionId = transactionResult.GetHash()
+                //};
 
-                return this.Json(model);
+                return this.Json(transactionResult.ToHex());
             }
             catch (Exception e)
             {
