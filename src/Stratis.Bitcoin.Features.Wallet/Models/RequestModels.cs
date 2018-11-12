@@ -366,4 +366,13 @@ namespace Stratis.Bitcoin.Features.Wallet.Models
         /// </summary>
         public int MinConfirmations { get; set; }
     }
+
+    public class WalletPropagationModel : RequestModel
+    {
+        [JsonProperty(PropertyName = "hexListPath")]
+        public string HexListPath { get; set; }
+
+        [JsonProperty(PropertyName = "samplingInterval")]
+        public int Interval { get; set; }
+    }
 }

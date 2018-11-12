@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Security;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NBitcoin;
@@ -1174,5 +1176,29 @@ namespace Stratis.Bitcoin.Features.Wallet.Controllers
                 this.walletSyncManager.SyncFromHeight(blockHeightToSyncFrom);
             }
         }
-    }
+
+        [Route("propagate-transaction")]
+        [HttpPost]
+        public IActionResult PropagateTransaction([FromBody] WalletPropagationModel request)
+        {
+            try
+            {
+                List<Transaction> transactions = new List<Transaction>();
+                using (StreamReader reader = System.IO.File.OpenText(request.HexListPath))
+                {
+                    string line = string.Empty;
+                    while ((line = reader.ReadLine()) != null)
+                        if (line.Split(',')[1] == "FALSE") transactions.Add(this.network.CreateTransaction(line.Split(',')[0]));
+
+                    Parallel.ForEach(transactions, (transaction) => { this.broadcasterManager.BroadcastTransactionAsync(transaction).GetAwaiter().GetResult();});
+
+                    return this.Json("success");
+                }
+            }
+            catch(Exception e)
+            {
+                return this.Json(e.ToString());
+            }
+        }
+}
 }
