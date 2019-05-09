@@ -58,13 +58,14 @@ namespace Stratis.Sidechains.Networks
             // and should be the same for all nodes operating on this network.
             var genesisFederationMembers = new List<IFederationMember>()
             {
-                new CollateralFederationMember(new PubKey("036317d97f911ce899fd0a360866d19f2dca5252c7960d4652d814ab155a8342de"), new Money(0), null),
-                new CollateralFederationMember(new PubKey("02a08d72d47b3103261163c15aa2f6b0d007e1872ad9f5fddbfbd27bdb738156e9"), new Money(0), null),
-                new CollateralFederationMember(new PubKey("03634c79d4e8e915cfb9f7bbef57bed32d715150836b7845b1a14c93670d816ab6"), new Money(0), null),
-                new CollateralFederationMember(new PubKey("02062601ddfdb2208c1d074f1019fe6bc582ff9a0956a9cbe03f19af04b94f831b"), new Money(0), null),
-                new CollateralFederationMember(new PubKey("03c36d4fd9a7f949df8ccd2b173e5cb8a5f77a8ad270d37b509314123b225afdfd"), new Money(0), null),
-                new CollateralFederationMember(new PubKey("0254c4944820c49f8d595aa78bfce771453558dd159fd5eee8fac097fc3ac17c1b"), new Money(0), null),
-                new CollateralFederationMember(new PubKey("03dad9bf0493560203ed6a1089749d140fa33d83aa15fcc8b22a108511389bdcef"), new Money(0), null)
+                new CollateralFederationMember(new Mnemonic("basic exotic crack drink left judge tourist giggle muscle unique horn body").DeriveExtKey().PrivateKey.PubKey, new Money(10000_00000000), "SgKKjTJBAEk1WXMYTeR5XHCF1cVsAFR8D8"),
+                new CollateralFederationMember(new Mnemonic("describe supreme leopard face usage post solid cruel awful empty airport chimney").DeriveExtKey().PrivateKey.PubKey, new Money(10000_00000000), "SfbPKnBrTn2GJb7gntBPM4JUGjyHHtDTnZ"),
+                new CollateralFederationMember(new Mnemonic("unusual nasty narrow canal suggest humor idea leisure purity supreme naive stool").DeriveExtKey().PrivateKey.PubKey, new Money(10000_00000000), "SU7jUGKMswDyQw2GNjUX6VzgDCEaP93X1f"),
+                new CollateralFederationMember(new Mnemonic("exchange fly diamond aware relax wisdom test primary dice lawn bulb cloth").DeriveExtKey().PrivateKey.PubKey, new Money(10000_00000000), "ST4eHJ48Gi4oDq9CiAqYPVRyoarsxUY9hA"),
+                new CollateralFederationMember(new Mnemonic("rose volcano clay service wing meat own option chest guide drastic afraid").DeriveExtKey().PrivateKey.PubKey, new Money(10000_00000000), "STZ5Dm57BPbHgRYjaCffzVhvhF6VsB2z1S"),
+                new CollateralFederationMember(new Mnemonic("into tonight barrel luxury world chunk marble ask into gauge dwarf hurry").DeriveExtKey().PrivateKey.PubKey, new Money(10000_00000000), "SMtKJKo5dThxNJhEf7fZggpoYdzZn21zpa"),
+                new CollateralFederationMember(new Mnemonic("people diet stock monitor swear kid cause raven purse purity auction junior").DeriveExtKey().PrivateKey.PubKey, new Money(10000_00000000), "SMQL9PvggC5cVTj3JRN6Wjjddz8RTposUS"),
+                new CollateralFederationMember(new Mnemonic("split dinosaur torch scrub sick reveal swear trend blue fit impulse vehicle").DeriveExtKey().PrivateKey.PubKey, new Money(0), null)
             };
 
             var consensusOptions = new PoAConsensusOptions(
