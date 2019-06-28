@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -75,6 +76,8 @@ namespace Stratis.Bitcoin.Features.PoA
         private readonly PoAMinerSettings settings;
         private readonly IAsyncProvider asyncProvider;
 
+        private List<(string name, bool is50K, string pubKey)> MembersList = new List<(string name, bool is50K, string pubKey)>();
+
         private Task miningTask;
 
         public PoAMiner(
@@ -115,6 +118,7 @@ namespace Stratis.Bitcoin.Features.PoA
             this.cancellation = CancellationTokenSource.CreateLinkedTokenSource(new[] { nodeLifetime.ApplicationStopping });
             this.votingDataEncoder = new VotingDataEncoder(loggerFactory);
 
+            readList();
             nodeStats.RegisterStats(this.AddComponentStats, StatsType.Component);
         }
 
@@ -334,10 +338,14 @@ namespace Stratis.Bitcoin.Features.PoA
             ChainedHeader currentHeader = tip;
             uint currentTime = currentHeader.Header.Time;
 
-            int maxDepth = 45;
-            int pubKeyTakeCharacters = 4;
+            
+            //int maxDepth = fedMembers.Count;
+            int maxDepth = 500;
+
+            int pubKeyTakeCharacters = 8;
             int depthReached = 0;
             int hitCount = 0;
+            List<string> listOfPubKeyHits = new List<string>();
 
             log.AppendLine($"Mining information for the last {maxDepth} blocks.");
             log.AppendLine("MISS means that miner didn't produce a block at the timestamp he was supposed to.");
@@ -348,6 +356,7 @@ namespace Stratis.Bitcoin.Features.PoA
                 string pubKeyRepresentation = this.slotsManager.GetFederationMemberForTimestamp(currentTime).PubKey.ToString().Substring(0, pubKeyTakeCharacters);
 
                 log.Append("[" + pubKeyRepresentation + "]-");
+                listOfPubKeyHits.Add(pubKeyRepresentation);
                 depthReached++;
                 hitCount++;
 
@@ -372,6 +381,48 @@ namespace Stratis.Bitcoin.Features.PoA
             log.AppendLine();
             log.AppendLine($"Block producers hits      : {hitCount} of {maxDepth}({(((float)hitCount / (float)maxDepth)).ToString("P2")})");
             log.AppendLine($"Block producers idle time : {TimeSpan.FromSeconds(this.network.ConsensusOptions.TargetSpacingSeconds * (maxDepth - hitCount)).ToString(@"hh\:mm\:ss")}");
+
+            int index = 1;
+            StringBuilder fifthyKBuilder = new StringBuilder();
+            StringBuilder tenKBuilder = new StringBuilder();
+            string header = $"{"Order".PadRight(10)} {"Name".PadRight(20)} {"Type".PadRight(10)} {"IsActive".PadRight(10)} {"PubKey".PadRight(10)}";
+            int count10k = 0;
+            int count50k = 0;
+            int count10kMining = 0;
+            int count50kMining = 0;
+
+            foreach (var member in this.MembersList)
+            {
+                bool isMining = listOfPubKeyHits.Contains(member.pubKey.Substring(0, 8));
+                if (member.is50K)
+                {
+                    fifthyKBuilder.AppendLine($"{index++.ToString().PadRight(10)} {member.name.PadRight(20)} {(member.is50K ? "50K" : "10K").PadRight(10)} {isMining.ToString().PadRight(10)} {member.pubKey.PadRight(100)}");
+                    count50k++;
+                    if (isMining) count50kMining++;
+                }
+                else
+                {
+                    tenKBuilder.AppendLine($"{index++.ToString().PadRight(10)} {member.name.PadRight(20)} {(member.is50K ? "50K" : "10K").PadRight(10)} {isMining.ToString().PadRight(10)} {member.pubKey.PadRight(100)}");
+                    count10k++;
+                    if (isMining) count10kMining++;
+                }
+            }
+
+            int totalNodesMining = count50kMining + count10kMining;
+            int totalNodes = count10k + count50k;
+            log.AppendLine($"Federated Nodes Mining    : {totalNodesMining} / {totalNodes}({(((float)(totalNodesMining) / (float)(totalNodes))).ToString("P2")})");
+            log.AppendLine($"50K Nodes Mining          : {count50kMining} / {count50k}({(((float)count50kMining / (float)count50k)).ToString("P2")})");
+            log.AppendLine($"10K Nodes Mining          : {count10kMining} / {count10k}({(((float)count10kMining / (float)count10k)).ToString("P2")})");
+            log.AppendLine();
+            log.AppendLine("======PoA Members Active Mining Details======");
+            log.AppendLine("======           50K                   ======");
+            log.AppendLine(header);
+            log.AppendLine(fifthyKBuilder.ToString());
+            log.AppendLine();
+            log.AppendLine("======PoA Members Active Mining Details======");
+            log.AppendLine("======           10K                   ======");
+            log.AppendLine(header);
+            log.AppendLine(tenKBuilder.ToString());
             log.AppendLine();
         }
 
@@ -382,6 +433,27 @@ namespace Stratis.Bitcoin.Features.PoA
             this.miningTask?.GetAwaiter().GetResult();
 
             this.cancellation.Dispose();
+        }
+
+        private void readList()
+        {
+            string folder = "c:\\dev\\temp\\";
+            string csvFileName = "membersNew.csv";
+            var fedMembers = this.network.ConsensusOptions.GenesisFederationMembers;
+            List<CollateralFederationMember> federation = this.network.ConsensusOptions.GenesisFederationMembers.Cast<CollateralFederationMember>().ToList();
+
+            using (var reader = new StreamReader(Path.Combine(folder, csvFileName)))
+            {
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    var values = line.Split(',');
+                    //bool is50K = federation.Any(x => (x.PubKey.ToString() == values[2].ToString()) && (x.CollateralAmount == new Money(50000_00000000)));
+                    this.MembersList.Add((name: values[0], is50K: federation.Any(x => (x.PubKey.ToString() == values[2].ToString()) && (x.CollateralAmount == new Money(50000_00000000))), pubKey: values[2]));
+                }
+            }
+
+            this.MembersList.RemoveAt(0);
         }
     }
 }
